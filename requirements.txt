@@ -1,0 +1,5 @@
+anthropic
+pymupdf
+scikit-learn
+numpy
+python-dotenv
