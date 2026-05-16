@@ -1,5 +1,6 @@
-anthropic
 pymupdf
 scikit-learn
 numpy
 python-dotenv
+streamlit
+google-genai

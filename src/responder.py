@@ -1,22 +1,18 @@
 import os
-import anthropic
-
-client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+from openai import OpenAI
 
 def ask(question, context_chunks):
+    client = OpenAI(
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1"
+    )
     context = "\n\n---\n\n".join(context_chunks)
 
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1024,
-        system=(
-            "You are a helpful assistant. "
-            "Answer questions using ONLY the context provided. "
-            "If the answer is not in the context, say 'I could not find that in the document'."
-        ),
-        messages=[{
-            "role": "user",
-            "content": f"Context:\n{context}\n\nQuestion: {question}"
-        }]
+    response = client.chat.completions.create(
+        model="meta-llama/llama-3.1-8b-instruct",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant. Answer using ONLY the context provided. If the answer is not in the context, say 'I could not find that in the document'."},
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"}
+        ]
     )
-    return response.content[0].text
+    return response.choices[0].message.content
